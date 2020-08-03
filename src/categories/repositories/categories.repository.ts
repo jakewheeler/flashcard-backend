@@ -1,12 +1,18 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
 import { ForbiddenException } from '@nestjs/common';
+import { Deck } from '../entities/deck.entity';
 
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {
   async getCategories(): Promise<Category[]> {
     const categories = await this.find();
     return categories;
+  }
+
+  async getCategory(id: string): Promise<Category> {
+    const category = await this.findOne({ id });
+    return category;
   }
 
   async createCategory(name: string): Promise<Category> {
