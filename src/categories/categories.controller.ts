@@ -11,6 +11,7 @@ import { CategoriesService } from './categories.service';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Deck } from './entities/deck.entity';
+import { CreateDeckDto } from './dto/create-deck.dto';
 
 /*
     Categories are the top level entry point into the app
@@ -49,7 +50,6 @@ export class CategoriesController {
     return this.categoriesService.deleteCategory(id);
   }
 
-
   /*
     Decks
   */
@@ -59,4 +59,12 @@ export class CategoriesController {
     return this.categoriesService.getDecks(categoryId);
   }
 
+  @Post(':id/decks')
+  async createDeck(
+    @Param('id') categoryId: string,
+    @Body('name') name: string,
+  ): Promise<Deck> {
+    const dto = new CreateDeckDto(categoryId, name);
+    return this.categoriesService.createDeck(dto);
+  }
 }
