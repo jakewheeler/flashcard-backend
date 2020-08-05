@@ -60,12 +60,12 @@ export class CategoriesController {
     return this.categoriesService.getDecks(categoryId);
   }
 
-  @Get(':categoryId/decks/:deckId')
+  @Get(':categoryId/decks/:id')
   async getDeck(
     @Param('categoryId') categoryId: string,
-    @Param('deckId') deckId: string,
+    @Param('id') id: string,
   ): Promise<Deck> {
-    return this.categoriesService.getDeck(categoryId, deckId);
+    return this.categoriesService.getDeck(categoryId, id);
   }
 
   @Post(':id/decks')
