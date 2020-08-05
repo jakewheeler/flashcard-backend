@@ -77,21 +77,21 @@ export class CategoriesController {
     return this.categoriesService.createDeck(dto);
   }
 
-  @Patch(':categoryId/decks/:deckId')
+  @Patch(':categoryId/decks/:id')
   async updateDeck(
     @Param('categoryId') categoryId: string,
-    @Param('deckId') deckId: string,
+    @Param('id') id: string,
     @Body('name') name: string,
   ): Promise<Deck> {
-    const dto = new UpdateDeckDto(categoryId, name, deckId);
+    const dto = new UpdateDeckDto(categoryId, name, id);
     return this.categoriesService.updateDeck(dto);
   }
 
-  @Delete(':categoryId/decks/:deckId')
+  @Delete(':categoryId/decks/:id')
   async deleteDeck(
     @Param('categoryId') categoryId: string,
-    @Param('deckId') deckId: string,
+    @Param('id') id: string,
   ): Promise<void> {
-    return this.categoriesService.deleteDeck(categoryId, deckId);
+    return this.categoriesService.deleteDeck(categoryId, id);
   }
 }
