@@ -86,4 +86,12 @@ export class CategoriesController {
     const dto = new UpdateDeckDto(categoryId, name, deckId);
     return this.categoriesService.updateDeck(dto);
   }
+
+  @Delete(':categoryId/decks/:deckId')
+  async deleteDeck(
+    @Param('categoryId') categoryId: string,
+    @Param('deckId') deckId: string,
+  ): Promise<void> {
+    return this.categoriesService.deleteDeck(categoryId, deckId);
+  }
 }

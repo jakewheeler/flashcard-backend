@@ -65,4 +65,10 @@ export class CategoriesService {
     await deck.save();
     return deck;
   }
+
+  async deleteDeck(categoryId: string, id: string): Promise<void> {
+    const result = await this.deckRepository.delete({ categoryId, id });
+    if (result.affected === 0)
+      throw new NotFoundException('No deck with this ID');
+  }
 }
