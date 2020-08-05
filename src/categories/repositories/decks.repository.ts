@@ -10,6 +10,12 @@ export class DeckRepository extends Repository<Deck> {
     return decks;
   }
 
+  async getDeck(categoryId: string, deckId: string): Promise<Deck> {
+    console.log(categoryId, deckId);
+    const deck = await this.findOne({ categoryId, id: deckId });
+    return deck;
+  }
+
   async createDeck(createDeckDto: CreateDeckDto): Promise<Deck> {
     const query = this.createQueryBuilder('deck');
     query.where('deck.categoryId = :id', { id: createDeckDto.categoryId });

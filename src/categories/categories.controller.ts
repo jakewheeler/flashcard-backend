@@ -12,6 +12,7 @@ import { Category } from './entities/category.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Deck } from './entities/deck.entity';
 import { CreateDeckDto } from './dto/create-deck.dto';
+import { UpdateDeckDto } from './dto/update-deck.dto';
 
 /*
     Categories are the top level entry point into the app
@@ -59,6 +60,14 @@ export class CategoriesController {
     return this.categoriesService.getDecks(categoryId);
   }
 
+  @Get(':categoryId/decks/:deckId')
+  async getDeck(
+    @Param('categoryId') categoryId: string,
+    @Param('deckId') deckId: string,
+  ): Promise<Deck> {
+    return this.categoriesService.getDeck(categoryId, deckId);
+  }
+
   @Post(':id/decks')
   async createDeck(
     @Param('id') categoryId: string,
@@ -66,5 +75,15 @@ export class CategoriesController {
   ): Promise<Deck> {
     const dto = new CreateDeckDto(categoryId, name);
     return this.categoriesService.createDeck(dto);
+  }
+
+  @Patch(':categoryId/decks/:deckId')
+  async updateDeck(
+    @Param('categoryId') categoryId: string,
+    @Param('deckId') deckId: string,
+    @Body('name') name: string,
+  ): Promise<Deck> {
+    const dto = new UpdateDeckDto(categoryId, name, deckId);
+    return this.categoriesService.updateDeck(dto);
   }
 }

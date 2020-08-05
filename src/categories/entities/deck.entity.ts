@@ -2,14 +2,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Unique,
   BaseEntity,
   ManyToOne,
 } from 'typeorm';
 import { Category } from './category.entity';
 
 @Entity()
-@Unique(['name'])
 export class Deck extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -7,5 +7,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   password: 'sql',
   database: 'flashcards',
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  synchronize: true,
+  synchronize: false,
 };

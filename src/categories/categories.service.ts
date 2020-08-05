@@ -6,6 +6,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Deck } from './entities/deck.entity';
 import { DeckRepository } from './repositories/decks.repository';
 import { CreateDeckDto } from './dto/create-deck.dto';
+import { UpdateDeckDto } from './dto/update-deck.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -49,7 +50,19 @@ export class CategoriesService {
     return this.deckRepository.getDecks(categoryId);
   }
 
+  async getDeck(categoryId: string, deckId: string): Promise<Deck> {
+    return this.deckRepository.getDeck(categoryId, deckId);
+  }
+
   async createDeck(createDeckDto: CreateDeckDto): Promise<Deck> {
     return this.deckRepository.createDeck(createDeckDto);
+  }
+
+  async updateDeck(updateDeckDto: UpdateDeckDto): Promise<Deck> {
+    const { name, categoryId, deckId } = updateDeckDto;
+    const deck = await this.getDeck(categoryId, deckId);
+    deck.name = name;
+    await deck.save();
+    return deck;
   }
 }
