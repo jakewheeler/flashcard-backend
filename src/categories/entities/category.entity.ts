@@ -9,8 +9,8 @@ import { Deck } from './deck.entity';
 
 @Entity()
 export class Category extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column()
   name: string;
@@ -18,7 +18,6 @@ export class Category extends BaseEntity {
   @OneToMany(
     type => Deck,
     deck => deck.category,
-    { eager: false },
   )
   decks: Deck[];
 }

@@ -1,10 +1,10 @@
 import { CreateDeckDto } from './create-deck.dto';
 
 export class UpdateDeckDto extends CreateDeckDto {
-  deckId: string;
+  id: number;
 
-  constructor(categoryId: string, name: string, deckId: string) {
+  constructor(categoryId: number, name: string, id: number) {
     super(categoryId, name);
-    this.deckId = deckId;
+    this.id = id;
   }
 }

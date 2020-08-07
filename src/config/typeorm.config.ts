@@ -5,7 +5,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   port: 5432,
   username: 'postgres',
   password: 'sql',
-  database: 'flashcards',
+  database: 'flashcard_back',
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  synchronize: false,
+  synchronize: true,
 };

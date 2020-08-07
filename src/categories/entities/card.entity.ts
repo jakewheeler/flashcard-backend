@@ -4,18 +4,20 @@ import {
   Column,
   Generated,
   BaseEntity,
+  ManyToOne,
 } from 'typeorm';
+import { Deck } from './deck.entity';
 
 @Entity()
 export class Card extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-  @Column()
-  categoryId: string;
-
-  @Column()
-  deckId: string;
+  @ManyToOne(
+    type => Deck,
+    deck => deck.cards,
+  )
+  deck: Deck;
 
   @Column()
   front: string;

@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {
@@ -9,8 +9,13 @@ export class CategoryRepository extends Repository<Category> {
     return categories;
   }
 
-  async getCategory(id: string): Promise<Category> {
+  async getCategory(id: number): Promise<Category> {
     const category = await this.findOne({ id });
+
+    if (!category) {
+      throw new NotFoundException('No category with this ID exists');
+    }
+
     return category;
   }
 

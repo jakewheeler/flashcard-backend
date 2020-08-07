@@ -1,8 +1,8 @@
 export class CreateDeckDto {
-  categoryId: string;
+  categoryId: number;
   name: string;
 
-  constructor(categoryId: string, name: string) {
+  constructor(categoryId: number, name: string) {
     this.categoryId = categoryId;
     this.name = name;
   }

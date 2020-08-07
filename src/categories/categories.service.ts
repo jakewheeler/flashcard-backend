@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryRepository } from './repositories/categories.repository';
@@ -20,7 +24,7 @@ export class CategoriesService {
     return this.categoryRepository.getCategories();
   }
 
-  async getCategory(id: string): Promise<Category> {
+  async getCategory(id: number): Promise<Category> {
     return this.categoryRepository.getCategory(id);
   }
 
@@ -33,7 +37,7 @@ export class CategoriesService {
     return category;
   }
 
-  async deleteCategory(id: string): Promise<void> {
+  async deleteCategory(id: number): Promise<void> {
     const result = await this.categoryRepository.delete({ id });
     if (result.affected === 0)
       throw new NotFoundException('No category with this ID');
@@ -46,28 +50,50 @@ export class CategoriesService {
   /*
     Decks
   */
-  async getDecks(categoryId: string): Promise<Deck[]> {
+  async getDecks(categoryId: number): Promise<Deck[]> {
     return this.deckRepository.getDecks(categoryId);
   }
 
-  async getDeck(categoryId: string, deckId: string): Promise<Deck> {
+  async getDeck(categoryId: number, deckId: number): Promise<Deck> {
     return this.deckRepository.getDeck(categoryId, deckId);
   }
 
   async createDeck(createDeckDto: CreateDeckDto): Promise<Deck> {
-    return this.deckRepository.createDeck(createDeckDto);
-  }
+    const { name, categoryId: id } = createDeckDto;
 
-  async updateDeck(updateDeckDto: UpdateDeckDto): Promise<Deck> {
-    const { name, categoryId, deckId } = updateDeckDto;
-    const deck = await this.getDeck(categoryId, deckId);
+    // check if there's a check with the same name already in this category
+    const deckExists = await this.deckRepository.find({
+      category: { id },
+      name,
+    });
+
+    if (deckExists.length) {
+      throw new ForbiddenException(
+        'Deck with this name already exists in this category.',
+      );
+    }
+
+    const category = await this.categoryRepository.getCategory(id);
+    const deck = new Deck();
+    deck.category = category;
     deck.name = name;
     await deck.save();
     return deck;
   }
 
-  async deleteDeck(categoryId: string, id: string): Promise<void> {
-    const result = await this.deckRepository.delete({ categoryId, id });
+  async updateDeck(updateDeckDto: UpdateDeckDto): Promise<Deck> {
+    const { name, categoryId, id } = updateDeckDto;
+    const deck = await this.getDeck(categoryId, id);
+    deck.name = name;
+    await deck.save();
+    return deck;
+  }
+
+  async deleteDeck(categoryId: number, id: number): Promise<void> {
+    const result = await this.deckRepository.delete({
+      category: { id: categoryId },
+      id,
+    });
     if (result.affected === 0)
       throw new NotFoundException('No deck with this ID');
   }

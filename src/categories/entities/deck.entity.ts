@@ -4,13 +4,15 @@ import {
   Column,
   BaseEntity,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { Category } from './category.entity';
+import { Card } from './card.entity';
 
 @Entity()
 export class Deck extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column()
   name: string;
@@ -18,10 +20,12 @@ export class Deck extends BaseEntity {
   @ManyToOne(
     type => Category,
     category => category.decks,
-    { eager: false },
   )
   category: Category;
 
-  @Column()
-  categoryId: string;
+  @OneToMany(
+    type => Card,
+    card => card.deck,
+  )
+  cards: Card[];
 }

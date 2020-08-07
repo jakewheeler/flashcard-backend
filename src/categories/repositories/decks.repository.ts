@@ -1,38 +1,19 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Deck } from '../entities/deck.entity';
-import { CreateDeckDto } from '../dto/create-deck.dto';
-import { ForbiddenException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(Deck)
 export class DeckRepository extends Repository<Deck> {
-  async getDecks(categoryId: string): Promise<Deck[]> {
-    const decks = await this.find({ categoryId });
+  async getDecks(categoryId: number): Promise<Deck[]> {
+    const decks = await this.find({ category: { id: categoryId } });
     return decks;
   }
 
-  async getDeck(categoryId: string, deckId: string): Promise<Deck> {
-    console.log(categoryId, deckId);
-    const deck = await this.findOne({ categoryId, id: deckId });
-    return deck;
-  }
-
-  async createDeck(createDeckDto: CreateDeckDto): Promise<Deck> {
-    const query = this.createQueryBuilder('deck');
-    query.where('deck.categoryId = :id', { id: createDeckDto.categoryId });
-    query.andWhere('deck.name = :name', { name: createDeckDto.name });
-
-    const deckExists = (await query.getCount()) >= 1;
-
-    if (deckExists) {
-      throw new ForbiddenException(
-        'Deck with this name already exists in this category.',
-      );
+  async getDeck(categoryId: number, id: number): Promise<Deck> {
+    const deck = await this.findOne({ category: { id: categoryId }, id });
+    if (!deck) {
+      throw new NotFoundException('No deck with this ID found');
     }
-
-    const deck = new Deck();
-    deck.name = createDeckDto.name;
-    deck.categoryId = createDeckDto.categoryId;
-    await deck.save();
     return deck;
   }
 }

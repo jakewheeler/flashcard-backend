@@ -28,7 +28,7 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  async getCategory(@Param('id') id: string): Promise<Category> {
+  async getCategory(@Param('id') id: number): Promise<Category> {
     return this.categoriesService.getCategory(id);
   }
 
@@ -39,7 +39,7 @@ export class CategoriesController {
 
   @Patch(':id')
   async updateCategory(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body('name') name: string,
   ): Promise<Category> {
     const dto = new UpdateCategoryDto(id, name);
@@ -47,7 +47,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  async deleteCategory(@Param('id') id: string): Promise<void> {
+  async deleteCategory(@Param('id') id: number): Promise<void> {
     return this.categoriesService.deleteCategory(id);
   }
 
@@ -56,21 +56,21 @@ export class CategoriesController {
   */
 
   @Get(':id/decks')
-  async getDecks(@Param('id') categoryId: string): Promise<Deck[]> {
-    return this.categoriesService.getDecks(categoryId);
+  async getDecks(@Param('id') id: number): Promise<Deck[]> {
+    return this.categoriesService.getDecks(id);
   }
 
   @Get(':categoryId/decks/:id')
   async getDeck(
-    @Param('categoryId') categoryId: string,
-    @Param('id') id: string,
+    @Param('categoryId') categoryId: number,
+    @Param('id') id: number,
   ): Promise<Deck> {
     return this.categoriesService.getDeck(categoryId, id);
   }
 
   @Post(':id/decks')
   async createDeck(
-    @Param('id') categoryId: string,
+    @Param('id') categoryId: number,
     @Body('name') name: string,
   ): Promise<Deck> {
     const dto = new CreateDeckDto(categoryId, name);
@@ -79,8 +79,8 @@ export class CategoriesController {
 
   @Patch(':categoryId/decks/:id')
   async updateDeck(
-    @Param('categoryId') categoryId: string,
-    @Param('id') id: string,
+    @Param('categoryId') categoryId: number,
+    @Param('id') id: number,
     @Body('name') name: string,
   ): Promise<Deck> {
     const dto = new UpdateDeckDto(categoryId, name, id);
@@ -89,8 +89,8 @@ export class CategoriesController {
 
   @Delete(':categoryId/decks/:id')
   async deleteDeck(
-    @Param('categoryId') categoryId: string,
-    @Param('id') id: string,
+    @Param('categoryId') categoryId: number,
+    @Param('id') id: number,
   ): Promise<void> {
     return this.categoriesService.deleteDeck(categoryId, id);
   }
