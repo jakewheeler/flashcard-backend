@@ -13,6 +13,8 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Deck } from './entities/deck.entity';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
+import { Card } from './entities/card.entity';
+import { CreateCardDto } from './dto/create-card.dto';
 
 /*
     Categories are the top level entry point into the app
@@ -93,5 +95,59 @@ export class CategoriesController {
     @Param('id') id: number,
   ): Promise<void> {
     return this.categoriesService.deleteDeck(categoryId, id);
+  }
+
+  /*
+    Cards
+  */
+
+  @Get(':categoryId/decks/:deckId/cards')
+  async getCards(
+    @Param('categoryId') categoryId: number,
+    @Param('deckId') deckId: number,
+  ): Promise<Card[]> {
+    return this.categoriesService.getCards(categoryId, deckId);
+  }
+
+  @Get(':categoryId/decks/:deckId/cards/:id')
+  async getCard(
+    @Param('categoryId') categoryId: number,
+    @Param('deckId') deckId: number,
+    @Param('id') id: number,
+  ): Promise<Card> {
+    return this.categoriesService.getCard(categoryId, deckId, id);
+  }
+
+  @Post(':categoryId/decks/:deckId/cards')
+  async createCard(
+    @Param('categoryId') categoryId: number,
+    @Param('deckId') deckId: number,
+    @Body() createCardDto: CreateCardDto,
+  ): Promise<Card> {
+    return this.categoriesService.createCard(categoryId, deckId, createCardDto);
+  }
+
+  @Patch(':categoryId/decks/:deckId/cards/:id')
+  async updateCard(
+    @Param('categoryId') categoryId: number,
+    @Param('deckId') deckId: number,
+    @Param('id') id: number,
+    @Body() createCardDto: CreateCardDto,
+  ): Promise<Card> {
+    return this.categoriesService.updateCard(
+      categoryId,
+      deckId,
+      id,
+      createCardDto,
+    );
+  }
+
+  @Delete(':categoryId/decks/:deckId/cards/:id')
+  async deleteCard(
+    @Param('categoryId') categoryId: number,
+    @Param('deckId') deckId: number,
+    @Param('id') id: number,
+  ): Promise<void> {
+    return this.categoriesService.deleteCard(categoryId, deckId, id);
   }
 }

@@ -25,7 +25,8 @@ export class Card extends BaseEntity {
   @Column()
   back: string;
 
-  @Generated()
+  @Generated('increment')
+  @Column()
   orderInDeck: number;
 
   @Column()

@@ -11,6 +11,9 @@ import { Deck } from './entities/deck.entity';
 import { DeckRepository } from './repositories/decks.repository';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
+import { Card } from './entities/card.entity';
+import { CardsRepository } from './repositories/cards.repository';
+import { CreateCardDto } from './dto/create-card.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -19,6 +22,8 @@ export class CategoriesService {
     private categoryRepository: CategoryRepository,
     @InjectRepository(DeckRepository)
     private deckRepository: DeckRepository,
+    @InjectRepository(CardsRepository)
+    private cardRepository: CardsRepository,
   ) {}
   async getCategories(): Promise<Category[]> {
     return this.categoryRepository.getCategories();
@@ -96,5 +101,69 @@ export class CategoriesService {
     });
     if (result.affected === 0)
       throw new NotFoundException('No deck with this ID');
+  }
+
+  /*
+    Cards
+  */
+
+  async getCards(categoryId: number, deckId: number): Promise<Card[]> {
+    const { id } = await this.getDeck(categoryId, deckId);
+    const cards = await this.cardRepository.find({ deck: { id } });
+    return cards;
+  }
+
+  async getCard(categoryId: number, deckId: number, id: number): Promise<Card> {
+    const deck = await this.getDeck(categoryId, deckId);
+    const card = await this.cardRepository.findOne({
+      deck: { id: deck.id },
+      id,
+    });
+    if (!card) {
+      throw new NotFoundException('There is no card with this ID');
+    }
+    return card;
+  }
+
+  async createCard(
+    categoryId: number,
+    deckId: number,
+    createCardDto: CreateCardDto,
+  ): Promise<Card> {
+    const deck = await this.getDeck(categoryId, deckId);
+
+    const { front, back, type } = createCardDto;
+
+    const card = new Card();
+    card.front = front;
+    card.back = back;
+    card.type = type;
+    card.deck = deck;
+    await card.save();
+    return card;
+  }
+
+  async updateCard(
+    categoryId: number,
+    deckId: number,
+    id: number,
+    createCardDto: CreateCardDto,
+  ): Promise<Card> {
+    const card = await this.getCard(categoryId, deckId, id);
+    const { front, back, type } = createCardDto;
+    card.front = front;
+    card.back = back;
+    card.type = type;
+    await card.save();
+    return card;
+  }
+
+  async deleteCard(
+    categoryId: number,
+    deckId: number,
+    id: number,
+  ): Promise<void> {
+    const card = await this.getCard(categoryId, deckId, id);
+    await this.cardRepository.delete(card);
   }
 }
