@@ -77,7 +77,7 @@ export class CategoriesController {
     @Param('id') id: number,
     @GetUser() user: User,
   ): Promise<Deck[]> {
-    return this.categoriesService.getDecks(id);
+    return this.categoriesService.getDecks(id, user);
   }
 
   @Get(':categoryId/decks/:id')
@@ -86,7 +86,7 @@ export class CategoriesController {
     @Param('id') id: number,
     @GetUser() user: User,
   ): Promise<Deck> {
-    return this.categoriesService.getDeck(categoryId, id);
+    return this.categoriesService.getDeck(categoryId, id, user);
   }
 
   @Post(':id/decks')
@@ -107,15 +107,16 @@ export class CategoriesController {
     @GetUser() user: User,
   ): Promise<Deck> {
     const dto = new UpdateDeckDto(categoryId, name, id);
-    return this.categoriesService.updateDeck(dto);
+    return this.categoriesService.updateDeck(dto, user);
   }
 
   @Delete(':categoryId/decks/:id')
   async deleteDeck(
     @Param('categoryId') categoryId: number,
     @Param('id') id: number,
+    @GetUser() user: User,
   ): Promise<void> {
-    return this.categoriesService.deleteDeck(categoryId, id);
+    return this.categoriesService.deleteDeck(categoryId, id, user);
   }
 
   /*
@@ -128,7 +129,7 @@ export class CategoriesController {
     @Param('deckId') deckId: number,
     @GetUser() user: User,
   ): Promise<Card[]> {
-    return this.categoriesService.getCards(categoryId, deckId);
+    return this.categoriesService.getCards(categoryId, deckId, user);
   }
 
   @Get(':categoryId/decks/:deckId/cards/:id')
@@ -138,7 +139,7 @@ export class CategoriesController {
     @Param('id') id: number,
     @GetUser() user: User,
   ): Promise<Card> {
-    return this.categoriesService.getCard(categoryId, deckId, id);
+    return this.categoriesService.getCard(categoryId, deckId, id, user);
   }
 
   @Post(':categoryId/decks/:deckId/cards')
@@ -148,7 +149,12 @@ export class CategoriesController {
     @Body() createCardDto: CreateCardDto,
     @GetUser() user: User,
   ): Promise<Card> {
-    return this.categoriesService.createCard(categoryId, deckId, createCardDto);
+    return this.categoriesService.createCard(
+      categoryId,
+      deckId,
+      createCardDto,
+      user,
+    );
   }
 
   @Patch(':categoryId/decks/:deckId/cards/:id')
@@ -164,6 +170,7 @@ export class CategoriesController {
       deckId,
       id,
       createCardDto,
+      user,
     );
   }
 
@@ -174,6 +181,6 @@ export class CategoriesController {
     @Param('id') id: number,
     @GetUser() user: User,
   ): Promise<void> {
-    return this.categoriesService.deleteCard(categoryId, deckId, id);
+    return this.categoriesService.deleteCard(categoryId, deckId, id, user);
   }
 }

@@ -15,7 +15,6 @@ import { Card } from './entities/card.entity';
 import { CardsRepository } from './repositories/cards.repository';
 import { CreateCardDto } from './dto/create-card.dto';
 import { User } from 'src/auth/user.entity';
-import { userInfo } from 'os';
 
 @Injectable()
 export class CategoriesService {
@@ -61,12 +60,31 @@ export class CategoriesService {
   /*
     Decks
   */
-  async getDecks(categoryId: number): Promise<Deck[]> {
-    return this.deckRepository.getDecks(categoryId);
+  async getDecks(categoryId: number, user: User): Promise<Deck[]> {
+    const category = await this.categoryRepository.getCategory(
+      categoryId,
+      user,
+    );
+    const decks = await this.deckRepository.find({
+      category: { id: category.id },
+    });
+
+    return decks;
   }
 
-  async getDeck(categoryId: number, deckId: number): Promise<Deck> {
-    return this.deckRepository.getDeck(categoryId, deckId);
+  async getDeck(categoryId: number, id: number, user: User): Promise<Deck> {
+    const category = await this.categoryRepository.getCategory(
+      categoryId,
+      user,
+    );
+    const deck = await this.deckRepository.findOne({
+      category: { id: category.id },
+      id,
+    });
+    if (!deck) {
+      throw new NotFoundException('No deck with this ID found');
+    }
+    return deck;
   }
 
   async createDeck(createDeckDto: CreateDeckDto, user: User): Promise<Deck> {
@@ -92,19 +110,17 @@ export class CategoriesService {
     return deck;
   }
 
-  async updateDeck(updateDeckDto: UpdateDeckDto): Promise<Deck> {
+  async updateDeck(updateDeckDto: UpdateDeckDto, user: User): Promise<Deck> {
     const { name, categoryId, id } = updateDeckDto;
-    const deck = await this.getDeck(categoryId, id);
+    const deck = await this.getDeck(categoryId, id, user);
     deck.name = name;
     await deck.save();
     return deck;
   }
 
-  async deleteDeck(categoryId: number, id: number): Promise<void> {
-    const result = await this.deckRepository.delete({
-      category: { id: categoryId },
-      id,
-    });
+  async deleteDeck(categoryId: number, id: number, user: User): Promise<void> {
+    const deckToDelete = await this.getDeck(categoryId, id, user);
+    const result = await this.deckRepository.delete(deckToDelete);
     if (result.affected === 0)
       throw new NotFoundException('No deck with this ID');
   }
@@ -113,14 +129,23 @@ export class CategoriesService {
     Cards
   */
 
-  async getCards(categoryId: number, deckId: number): Promise<Card[]> {
-    const { id } = await this.getDeck(categoryId, deckId);
+  async getCards(
+    categoryId: number,
+    deckId: number,
+    user: User,
+  ): Promise<Card[]> {
+    const { id } = await this.getDeck(categoryId, deckId, user);
     const cards = await this.cardRepository.find({ deck: { id } });
     return cards;
   }
 
-  async getCard(categoryId: number, deckId: number, id: number): Promise<Card> {
-    const deck = await this.getDeck(categoryId, deckId);
+  async getCard(
+    categoryId: number,
+    deckId: number,
+    id: number,
+    user: User,
+  ): Promise<Card> {
+    const deck = await this.getDeck(categoryId, deckId, user);
     const card = await this.cardRepository.findOne({
       deck: { id: deck.id },
       id,
@@ -135,8 +160,9 @@ export class CategoriesService {
     categoryId: number,
     deckId: number,
     createCardDto: CreateCardDto,
+    user: User,
   ): Promise<Card> {
-    const deck = await this.getDeck(categoryId, deckId);
+    const deck = await this.getDeck(categoryId, deckId, user);
 
     const { front, back, type } = createCardDto;
 
@@ -154,8 +180,9 @@ export class CategoriesService {
     deckId: number,
     id: number,
     createCardDto: CreateCardDto,
+    user: User,
   ): Promise<Card> {
-    const card = await this.getCard(categoryId, deckId, id);
+    const card = await this.getCard(categoryId, deckId, id, user);
     const { front, back, type } = createCardDto;
     card.front = front;
     card.back = back;
@@ -168,8 +195,9 @@ export class CategoriesService {
     categoryId: number,
     deckId: number,
     id: number,
+    user: User,
   ): Promise<void> {
-    const card = await this.getCard(categoryId, deckId, id);
+    const card = await this.getCard(categoryId, deckId, id, user);
     await this.cardRepository.delete(card);
   }
 }

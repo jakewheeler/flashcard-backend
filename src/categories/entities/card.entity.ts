@@ -16,6 +16,7 @@ export class Card extends BaseEntity {
   @ManyToOne(
     type => Deck,
     deck => deck.cards,
+    {onDelete: 'CASCADE'}
   )
   deck: Deck;
 
