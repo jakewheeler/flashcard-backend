@@ -5,13 +5,13 @@ import { User } from 'src/auth/user.entity';
 
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {
-  async getCategories(): Promise<Category[]> {
-    const categories = await this.find();
+  async getCategories(user: User): Promise<Category[]> {
+    const categories = await this.find({ userId: user.id });
     return categories;
   }
 
-  async getCategory(id: number): Promise<Category> {
-    const category = await this.findOne({ id });
+  async getCategory(id: number, user: User): Promise<Category> {
+    const category = await this.findOne({ id, userId: user.id });
 
     if (!category) {
       throw new NotFoundException('No category with this ID exists');

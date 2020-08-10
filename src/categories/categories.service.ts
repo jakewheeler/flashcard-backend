@@ -15,6 +15,7 @@ import { Card } from './entities/card.entity';
 import { CardsRepository } from './repositories/cards.repository';
 import { CreateCardDto } from './dto/create-card.dto';
 import { User } from 'src/auth/user.entity';
+import { userInfo } from 'os';
 
 @Injectable()
 export class CategoriesService {
@@ -26,25 +27,29 @@ export class CategoriesService {
     @InjectRepository(CardsRepository)
     private cardRepository: CardsRepository,
   ) {}
-  async getCategories(): Promise<Category[]> {
-    return this.categoryRepository.getCategories();
+  async getCategories(user: User): Promise<Category[]> {
+    return this.categoryRepository.getCategories(user);
   }
 
-  async getCategory(id: number): Promise<Category> {
-    return this.categoryRepository.getCategory(id);
+  async getCategory(id: number, user: User): Promise<Category> {
+    return this.categoryRepository.getCategory(id, user);
   }
 
   async updateCategory(
     updatedCategoryDto: UpdateCategoryDto,
+    user: User,
   ): Promise<Category> {
-    const category = await this.getCategory(updatedCategoryDto.id);
+    const category = await this.getCategory(updatedCategoryDto.id, user);
     category.name = updatedCategoryDto.name;
     await category.save();
     return category;
   }
 
-  async deleteCategory(id: number): Promise<void> {
-    const result = await this.categoryRepository.delete({ id });
+  async deleteCategory(id: number, user: User): Promise<void> {
+    const result = await this.categoryRepository.delete({
+      id,
+      userId: user.id,
+    });
     if (result.affected === 0)
       throw new NotFoundException('No category with this ID');
   }
@@ -64,7 +69,7 @@ export class CategoriesService {
     return this.deckRepository.getDeck(categoryId, deckId);
   }
 
-  async createDeck(createDeckDto: CreateDeckDto): Promise<Deck> {
+  async createDeck(createDeckDto: CreateDeckDto, user: User): Promise<Deck> {
     const { name, categoryId: id } = createDeckDto;
 
     // check if there's a check with the same name already in this category
@@ -79,7 +84,7 @@ export class CategoriesService {
       );
     }
 
-    const category = await this.categoryRepository.getCategory(id);
+    const category = await this.categoryRepository.getCategory(id, user);
     const deck = new Deck();
     deck.category = category;
     deck.name = name;

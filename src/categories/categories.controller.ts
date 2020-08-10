@@ -31,7 +31,7 @@ export class CategoriesController {
   // return all categories
   @Get()
   async getCategories(@GetUser() user: User): Promise<Category[]> {
-    return this.categoriesService.getCategories();
+    return this.categoriesService.getCategories(user);
   }
 
   @Get(':id')
@@ -39,7 +39,7 @@ export class CategoriesController {
     @Param('id') id: number,
     @GetUser() user: User,
   ): Promise<Category> {
-    return this.categoriesService.getCategory(id);
+    return this.categoriesService.getCategory(id, user);
   }
 
   @Post()
@@ -57,7 +57,7 @@ export class CategoriesController {
     @GetUser() user: User,
   ): Promise<Category> {
     const dto = new UpdateCategoryDto(id, name);
-    return this.categoriesService.updateCategory(dto);
+    return this.categoriesService.updateCategory(dto, user);
   }
 
   @Delete(':id')
@@ -65,7 +65,7 @@ export class CategoriesController {
     @Param('id') id: number,
     @GetUser() user: User,
   ): Promise<void> {
-    return this.categoriesService.deleteCategory(id);
+    return this.categoriesService.deleteCategory(id, user);
   }
 
   /*
@@ -96,7 +96,7 @@ export class CategoriesController {
     @GetUser() user: User,
   ): Promise<Deck> {
     const dto = new CreateDeckDto(categoryId, name);
-    return this.categoriesService.createDeck(dto);
+    return this.categoriesService.createDeck(dto, user);
   }
 
   @Patch(':categoryId/decks/:id')
