@@ -4,8 +4,10 @@ import {
   Column,
   BaseEntity,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { Deck } from './deck.entity';
+import { User } from 'src/auth/user.entity';
 
 @Entity()
 export class Category extends BaseEntity {
@@ -20,4 +22,13 @@ export class Category extends BaseEntity {
     deck => deck.category,
   )
   decks: Deck[];
+
+  @ManyToOne(
+    type => User,
+    user => user.categories,
+  )
+  user: User;
+
+  @Column()
+  userId: number;
 }

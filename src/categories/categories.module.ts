@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryRepository } from './repositories/categories.repository';
 import { DeckRepository } from './repositories/decks.repository';
 import { CardsRepository } from './repositories/cards.repository';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CardsRepository } from './repositories/cards.repository';
       DeckRepository,
       CardsRepository,
     ]),
+    AuthModule,
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService],

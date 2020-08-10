@@ -14,6 +14,7 @@ import { UpdateDeckDto } from './dto/update-deck.dto';
 import { Card } from './entities/card.entity';
 import { CardsRepository } from './repositories/cards.repository';
 import { CreateCardDto } from './dto/create-card.dto';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class CategoriesService {
@@ -48,8 +49,8 @@ export class CategoriesService {
       throw new NotFoundException('No category with this ID');
   }
 
-  async createCategory(name: string): Promise<Category> {
-    return this.categoryRepository.createCategory(name);
+  async createCategory(name: string, user: User): Promise<Category> {
+    return this.categoryRepository.createCategory(name, user);
   }
 
   /*

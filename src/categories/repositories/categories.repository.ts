@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { User } from 'src/auth/user.entity';
 
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {
@@ -19,9 +20,10 @@ export class CategoryRepository extends Repository<Category> {
     return category;
   }
 
-  async createCategory(name: string): Promise<Category> {
+  async createCategory(name: string, user: User): Promise<Category> {
     const query = this.createQueryBuilder('category');
     query.where('category.name = :catName', { catName: name });
+    query.andWhere(`category.userId = :userId`, { userId: user.id });
 
     const categoryExists = (await query.getCount()) >= 1;
 
@@ -31,7 +33,9 @@ export class CategoryRepository extends Repository<Category> {
 
     const category = new Category();
     category.name = name;
+    category.user = user;
     await category.save();
+    delete category.user;
     return category;
   }
 }
