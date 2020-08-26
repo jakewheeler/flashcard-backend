@@ -72,6 +72,11 @@ export class CategoriesController {
     Decks
   */
 
+  @Get('/all/decks')
+  async getAllDecksByUser(@GetUser() user: User): Promise<Deck[]> {
+    return this.categoriesService.getAllDecksByUser(user);
+  }
+
   @Get(':id/decks')
   async getDecks(
     @Param('id') id: number,
