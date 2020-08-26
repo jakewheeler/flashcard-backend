@@ -4,7 +4,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Category } from './entities/category.entity';
-import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryRepository } from './repositories/categories.repository';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Deck } from './entities/deck.entity';

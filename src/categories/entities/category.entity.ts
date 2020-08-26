@@ -18,16 +18,16 @@ export class Category extends BaseEntity {
   name: string;
 
   @OneToMany(
-    type => Deck,
+    () => Deck,
     deck => deck.category,
-    {cascade: true}
+    { cascade: true },
   )
   decks: Deck[];
 
   @ManyToOne(
-    type => User,
+    () => User,
     user => user.categories,
-    {onDelete: 'CASCADE'}
+    { onDelete: 'CASCADE' },
   )
   user: User;
 

@@ -18,14 +18,17 @@ export class Deck extends BaseEntity {
   name: string;
 
   @ManyToOne(
-    type => Category,
+    () => Category,
     category => category.decks,
     { onDelete: 'CASCADE' },
   )
   category: Category;
 
+  @Column()
+  categoryId: number;
+
   @OneToMany(
-    type => Card,
+    () => Card,
     card => card.deck,
     { cascade: true },
   )
