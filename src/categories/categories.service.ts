@@ -96,14 +96,11 @@ export class CategoriesService {
 
     // check if there's a check with the same name already in this category
     const deckExists = await this.deckRepository.find({
-      category: { id },
       name,
     });
 
     if (deckExists.length) {
-      throw new ForbiddenException(
-        'Deck with this name already exists in this category.',
-      );
+      throw new ForbiddenException('Deck with this name already exists.');
     }
 
     const category = await this.categoryRepository.getCategory(id, user);
