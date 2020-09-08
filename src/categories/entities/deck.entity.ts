@@ -34,3 +34,12 @@ export class Deck extends BaseEntity {
   )
   cards: Card[];
 }
+
+interface DecksByCategory {
+  key: string;
+  value: Deck[];
+}
+
+export interface DecksByCategoryObj {
+  [key: string]: DecksByCategory;
+}

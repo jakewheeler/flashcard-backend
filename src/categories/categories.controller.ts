@@ -11,7 +11,7 @@ import {
 import { CategoriesService } from './categories.service';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Deck } from './entities/deck.entity';
+import { Deck, DecksByCategoryObj } from './entities/deck.entity';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
 import { Card } from './entities/card.entity';
@@ -73,7 +73,7 @@ export class CategoriesController {
   */
 
   @Get('/all/decks')
-  async getAllDecksByUser(@GetUser() user: User): Promise<Deck[]> {
+  async getAllDecksByUser(@GetUser() user: User): Promise<DecksByCategoryObj> {
     return this.categoriesService.getAllDecksByUser(user);
   }
 
