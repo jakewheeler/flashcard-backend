@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -113,7 +114,13 @@ export class CategoriesService {
 
   async updateDeck(updateDeckDto: UpdateDeckDto, user: User): Promise<Deck> {
     const { name, categoryId, id } = updateDeckDto;
+
+    if (!name || name === '') {
+      throw new BadRequestException('Deck name must be provided');
+    }
+
     const deck = await this.getDeck(categoryId, id, user);
+
     deck.name = name;
     await deck.save();
     return deck;
