@@ -115,6 +115,14 @@ export class CategoriesService {
   async updateDeck(updateDeckDto: UpdateDeckDto, user: User): Promise<Deck> {
     const { name, categoryId, id } = updateDeckDto;
 
+    const deckExists = await this.deckRepository.find({
+      name,
+    });
+
+    if (deckExists.length) {
+      throw new ForbiddenException('Deck with this name already exists.');
+    }
+
     if (!name || name === '') {
       throw new BadRequestException('Deck name must be provided');
     }
