@@ -8,7 +8,7 @@ import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryRepository } from './repositories/categories.repository';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Deck, DecksByCategoryObj } from './entities/deck.entity';
+import { Deck } from './entities/deck.entity';
 import { DeckRepository } from './repositories/decks.repository';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
@@ -73,7 +73,7 @@ export class CategoriesService {
     return decks;
   }
 
-  async getAllDecksByUser(user: User): Promise<DecksByCategoryObj> {
+  async getAllDecksByUser(user: User): Promise<Deck[]> {
     return this.deckRepository.getAllDecksByUser(user);
   }
 

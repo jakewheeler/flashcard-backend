@@ -20,7 +20,7 @@ export class Category extends BaseEntity {
   @OneToMany(
     () => Deck,
     deck => deck.category,
-    { cascade: true },
+    { cascade: true, eager: true },
   )
   decks: Deck[];
 
