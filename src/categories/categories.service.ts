@@ -39,8 +39,19 @@ export class CategoriesService {
     updatedCategoryDto: UpdateCategoryDto,
     user: User,
   ): Promise<Category> {
+    // get category to update
     const category = await this.getCategory(updatedCategoryDto.id, user);
     category.name = updatedCategoryDto.name;
+
+    // check if a category with this name already exists
+    const categoryExists = await this.categoryRepository.find({
+      where: { name: category.name, userId: user.id },
+    });
+
+    if (categoryExists.length) {
+      throw new ForbiddenException('A category with this name already exists.');
+    }
+
     await category.save();
     return category;
   }

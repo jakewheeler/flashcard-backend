@@ -5,11 +5,13 @@ import {
   BaseEntity,
   OneToMany,
   ManyToOne,
+  Unique,
 } from 'typeorm';
 import { Deck } from './deck.entity';
 import { User } from 'src/auth/user.entity';
 
 @Entity()
+@Unique(['name', 'userId'])
 export class Category extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
