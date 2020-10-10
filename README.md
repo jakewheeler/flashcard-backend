@@ -1,3 +1,3 @@
-# Flashcard App Backend
+# Flashy Cards - Backend
 
-A NestJS backend for the flashcard app
+Take a look at the [Flashy cards frontend repository](https://github.com/jakewheeler/flashcard-frontend) for some more info.
